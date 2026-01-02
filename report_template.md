@@ -484,7 +484,7 @@ Analyse des courbes :
 ```
 
 
-LR : En diminuant le LR, on s’attend à une convergence plus lente ; ici les deux runs restent stables et quasi superposés sur les 10 premières époques, avec un léger avantage au LR le plus efficace (train/val loss un peu plus bas et val/accuracy un peu plus haute), indiquant une convergence un peu plus rapide sans instabilité.
+LR : En diminuant le LR, on s’attend à une convergence plus lente mais les deux runs restent stables et quasi superposés sur les 10 premières époques, avec un léger avantage au LR le plus efficace (train/val loss un peu plus bas et val/accuracy un peu plus haute), indiquant une convergence un peu plus rapide sans instabilité.
 
 ```
 
@@ -492,19 +492,20 @@ LR : En diminuant le LR, on s’attend à une convergence plus lente ; ici les d
 
 ```
 
-WD : Avec un weight decay plus élevé, on s’attend à réduire l’écart train–val ; ici le run orange présente bien un gap plus faible mais des pertes plus hautes et une val/accuracy plus basse (≈0.46 vs ≈0.50), ce qui indique une régularisation trop forte menant au sous-apprentissage.
-
-```
-
-<img src="captures/image-19.png" width="45%" />
-
-```
-
-Hyper Params:En réduisant la capacité du modèle (M=6 vers M=4), on observe une dégradation claire : train/loss reste plus haut, val/loss plafonne plus haut et val/accuracy plafonne plus bas (0.45 contre 0.50), ce qui indique du sous-apprentissage avec M=4 , tandis que le choix des branch_channels ((64,64,64) contre (48,72,72)) n’apporte qu’un gain marginal.
+WD : Avec un weight decay plus élevé, on s’attend à réduire l’écart train–val mais ca présente bien un gap plus faible mais des pertes plus hautes et une val/accuracy plus basse (≈0.46 vs ≈0.50), ce qui indique une régularisation trop forte menant au sous-apprentissage.
 
 ```
 
 <img src="captures/image-20.png" width="45%" />
+
+
+```
+
+Hyper Params:En réduisant la capacité du modèle (M=6 vers M=4), on observe une dégradation claire , train/loss reste plus haut, val/loss plafonne plus haut et val/accuracy plafonne plus bas (0.45 contre 0.50), ce qui indique du sous-apprentissage avec M=4 ,tandis que le choix des branch_channels ((64,64,64) contre (48,72,72)) n’apporte qu’un gain marginal.
+
+```
+
+<img src="captures/imagee.png" width="45%" />
 
 
 
@@ -537,11 +538,11 @@ Cette mini-grid (9 combinaisons, 8 époques) confirme que la meilleure région s
 ```
 
 Test du deuxième meilleur modèle : 
-- j'ai aussi fais une deuxieme run complet avec la deuxième meilleur config apres le premier grid search : LR =1e-3 et WD =1e-5 , M=6 et branch_channels= (64,64,64) :
-  - Pour le deuxième entraînement , j’ai relancé un train complet afin de vérifier si cette configuration pouvait rivaliser avec le meilleur modèle. 
-  - On observe une train/loss plus faible (le modèle apprend mieux le train), mais sans gain en généralisation 
-  - la val/accuracy reste légèrement en dessous et la val/loss est plus élevée que le baseline. 
-  - Ce teste confirme donc que cette deuxième configuration a tendance à mieux fitter le train sans améliorer la validation, et le premier modèle demeure le meilleur choix final.
+- J’ai aussi fait un deuxième run complet avec la deuxième meilleure configuration après le premier grid search : LR = 1e-3, WD = 1e-5, M = 6 et branch_channels = (64, 64, 64) : 
+  - Pour ce deuxième entraînement, j’ai relancé un entraînement complet afin de vérifier si cette configuration pouvait rivaliser avec le meilleur modèle. 
+  - On observe une train/loss plus faible ,le modèle apprend mieux sur l’entraînement mais sans gain en généralisation.
+  - La val/accuracy reste légèrement en dessous, et la val/loss est plus élevée que le baseline
+  - Ce test confirme donc que cette deuxième configuration a tendance à mieux fitter l’entraînement sans améliorer la validation, et le premier modèle demeure le meilleur choix final.
 
 ```
 
@@ -556,17 +557,21 @@ Test du deuxième meilleur modèle :
 
 **M9.** Donnez les **résultats test** et comparez-les à la validation (écart raisonnable ? surapprentissage probable ?).
 
+<img src="captures/image-50.png" width="45%" />
+
+
 ```
 
 
-l'évaluation du modele sur le split test montre une accuracy de 48% et val/test = 2.2 ; ces performances sont cohérents avec les resulats du split validatipn ( 50% accuracy et val-loss = 2.16 )
+
+l'évaluation du modele sur le split test montre une accuracy de 48,4% et test/loss = 2.2 ; ces performances sont cohérents avec les resulats du split validation ( 50% accuracy et val-loss = 2.16 )
 interpretation :
 l'ecart entre les performances du split test et validation est faible :
-val_accuracy =50.7%    /  test_accuracy =48.5% 
-val_loss =2.16     /  test_loss =2.198 
-La performance sur le test est un peu en dessous de la meilleure validation (0.508), ce qui est attendu : on a choisi le meilleur checkpoint en regardant la validation, donc celle-ci peut être légèrement “optimiste”, et le split test peut être un peu plus difficile.
+val_accuracy =50.7%  | test_accuracy =48.4% 
+val_loss =2.16     |  test_loss =2.198 
+La performance sur le test est un peu en dessous de la meilleure validation , ce qui est attendu : on a choisi le meilleur checkpoint en regardant la validation, donc celle-ci peut être légèrement “optimiste”, et le split test peut être un peu plus difficile.
 
-On ne voit pas de signe de surapprentissage marqué : l’écart reste modéré entre validation et test, et il est cohérent avec les courbes d’entraînement/validation qui se stabilisent sans divergence brutale.
+On ne voit pas de signe de surapprentissage marqué : l’écart reste modéré entre validation et test, et il est cohérent avec les courbes d’entraînement et validation qui se stabilisent sans divergence brutale.
 
 Bilan finale : le modèle finale est stable et généralise correctement sur des données inédites, même si la performance test est légèrement inférieure à la validation.
 
@@ -579,8 +584,8 @@ Bilan finale : le modèle finale est stable et généralise correctement sur des
 
 ```
 
-- Données : Tiny-ImageNet (200 classes)(64,64) ;tache difficile avec la vatriation des images ce que rend l'entrainnement difficile avec seulement 3 couches 
-- Modèle : architecture “inception_multibranch” simple, sans scheduler ni techniques avancées (mixup/cutmix/EMA) → performance plafonne autour de 0.50 val acc
+- Données : Tiny-ImageNet (200 classes)(64,64) ;tche difficile avec la vatriation des images ce que rend l'entrainnement difficile avec seulement 3 couches 
+- Modèle : architecture “inception_multibranch” simple, sans scheduler ce qui donne une performance plafonne autour de 0.50 val/acc
 - Compute : contraintes d’allocation SLURM (durée limitée) → grid search courte (2–8 epochs) et entraînements complets limités : entrainement fais sur un seul gpu qui empeche le travail sur des modeles plus larges.
 
 ```
@@ -590,10 +595,12 @@ Bilan finale : le modèle finale est stable et généralise correctement sur des
 
 ```
 
-- Problème : logs TensorBoard écrasés / difficiles à identifier (surtout en grid search, ou si l’allocation se termine avant la fin)
-- Solution : j’ai rendu les noms de runs uniques en ajoutant l’heure (timestamp) dans run_name / log_dir, ce qui évite l’écrasement des anciens logs et facilite le repérage de chaque essai.
+- Problème : logs TensorBoard écrasés et difficiles à identifier surtout en grid search ou si l’allocation se termine avant la fin
+
+- Solution : j’ai rendu les noms de runs uniques en ajoutant l’heure dans run_name et log_dir, ce qui évite l’écrasement des anciens logs et facilite le repérage de chaque essai.
 
 - Problème : le meilleur checkpoint est réécrit (artifacts/best.ckpt) lors de plusieurs entraînements
+
 - Solution : j’ai sauvegardé les checkpoints avec un nom lié à la config/run par exemple (best_model2.ckpt) et dans des sous-dossiers dédiés (artifacts/Gridsearch/)
 
 avec un snapshot YAML associé pour garder une traçabilité claire.
@@ -790,8 +797,9 @@ python -m src.grid_search --config configs/config.yaml --refined
 python -m src.evaluate --config configs/config1.yaml --checkpoint artifacts/best_model2.ckpt
 `comparaison M7`
 python -m src.compare_runs --config configs/config.yaml
-`Evaluation`
+`Evaluation Best`
 python -m src.evaluate --config configs/config.yaml --checkpoint artifacts/best.ckpt
+
 
 
 
@@ -809,6 +817,26 @@ python -m src.evaluate --config configs/config.yaml --checkpoint artifacts/best.
 
 * PyTorch docs des modules utilisés (Conv2d, BatchNorm, ReLU, LSTM/GRU, transforms, etc.).
 * Lien dataset officiel (et/ou HuggingFace/torchvision/torchaudio).
+* 
 * Toute ressource externe substantielle (une ligne par référence).
+Support pédagogique :
+ CSC8607 — Introduction au Deep Learning (cours et supports fournis).
 
+Documentation PyTorch (générale) :
+ https://docs.pytorch.org/docs/stable/index.html
+
+PyTorch — Modules utilisés (Conv2d, BatchNorm2d, ReLU, etc.) : 
+https://pytorch.org/docs/stable/nn.html
+
+PyTorch — Transforms / preprocessing :
+ https://pytorch.org/vision/stable/transforms.html
+
+Dataset : HuggingFace — Tiny-ImageNet (zh-plus/tiny-imagenet) : 
+https://huggingface.co/datasets/zh-plus/tiny-imagenet
+
+TensorBoard : 
+https://docs.pytorch.org/docs/stable/tensorboard.html
+
+Assistance (optimisation du code, structuration et correction du rapport) : 
+Gemini
 
