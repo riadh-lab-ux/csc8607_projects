@@ -15,7 +15,27 @@ pip install -r requirements.txt
 # pip install -r requirements.txt
 ````
 
-## Démarrage
+
+
+# Activer l'environnement d'exécution
+
+mamba activate csc8607
+
+# Allocation des ressources
+
+salloc --time=01:00:00 --gres=gpu:1 --cpus-per-task=2 --mem=8G
+
+srun --pty bash
+
+## TensorBoard pour visualiser les courbes
+
+### Côté serveur
+
+tensorboard --logdir=runs --port=6006 --bind_all
+
+### En local
+
+ssh -L 6006:arcadia-slurm-node-2:6006 tsp-client
 
 * Modifiez `configs/config.yaml` selon votre projet.
 * Implémentez les fonctions dans `src/`.

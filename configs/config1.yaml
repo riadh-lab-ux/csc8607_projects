@@ -84,4 +84,4 @@ hparams:
 
 paths:
   runs_dir: "./runs/train_model2"
-  artifacts_dir: "./artifacts"
+  artifacts_dir: "./artifacts/model2"

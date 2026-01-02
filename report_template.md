@@ -12,7 +12,7 @@
 
 - **Étudiant·e** : KHALFALLAH Riadh
 - **Projet** : Classification Tiny ImageNet (200 classes) avec un réseau “Inception-like” multibranches (Dataset = Tiny ImageNet 64×64 via HuggingFace · Modèle = CNN composé de M modules Inception-like à 3 branches parallèles avec concaténation des canaux + BatchNorm )
-- **Dépôt Git** : _URL publique_
+- **Dépôt Git** : https://github.com/riadh-lab-ux/csc8607_projects/tree/main
 - **Environnement** : `python == 3.10.19`, `torch == 2.9.1`, `cuda == 12.8`,`datasets == 4.4.2`  ,`Gpu` == NVIDIA H100 NVL MIG 1g.12gb
 - **Commandes utilisées** :
   - Entraînement : `python -m src.train --config configs/config.yaml`
@@ -33,7 +33,8 @@
 
 **D1.** Quel dataset utilisez-vous ? D’où provient-il et quel est son format (dimensions, type d’entrée) ?
 
-``` Dataset : Tiny ImageNet disponible via Hugging Face Datasets (zh-plus/tiny-imagenet)
+``` 
+Dataset : Tiny ImageNet disponible via Hugging Face Datasets (zh-plus/tiny-imagenet)
 
 Type : Images couleur RGB 
 
@@ -564,7 +565,7 @@ Test du deuxième meilleur modèle :
 
 
 
-l'évaluation du modele sur le split test montre une accuracy de 48,4% et test/loss = 2.2 ; ces performances sont cohérents avec les resulats du split validation ( 50% accuracy et val-loss = 2.16 )
+l'évaluation du modele sur le split test montre une accuracy de 48,4% et test/loss = 2.2 , ces performances sont cohérents avec les resulats du split validation ( 50% accuracy et val-loss = 2.16 )
 interpretation :
 l'ecart entre les performances du split test et validation est faible :
 val_accuracy =50.7%  | test_accuracy =48.4% 
@@ -584,9 +585,9 @@ Bilan finale : le modèle finale est stable et généralise correctement sur des
 
 ```
 
-- Données : Tiny-ImageNet (200 classes)(64,64) ;tche difficile avec la vatriation des images ce que rend l'entrainnement difficile avec seulement 3 couches 
+- Données : Tiny-ImageNet (200 classes)(64,64) : tache difficile avec la vatriation des images ce que rend l'entrainnement difficile avec seulement 3 couches 
 - Modèle : architecture “inception_multibranch” simple, sans scheduler ce qui donne une performance plafonne autour de 0.50 val/acc
-- Compute : contraintes d’allocation SLURM (durée limitée) → grid search courte (2–8 epochs) et entraînements complets limités : entrainement fais sur un seul gpu qui empeche le travail sur des modeles plus larges.
+- Compute : contraintes d’allocation SLURM (durée limitée) ce qui impose grid search courte et entraînements complets limités et l'entrainement est fais sur un seul gpu qui empeche le travail sur des modeles plus larges.
 
 ```
 
@@ -782,28 +783,31 @@ paths:
 - **Commandes exactes** :
 
 ```bash
+
 # Exemple (remplacer par vos commandes effectives)
-`overfit small`
+
+
+
+# overfit small
 python -m src.train --config configs/config.yaml --overfit_small
-`lr finder`
+# lr finder
 python -m src.lr_finder --config configs/config.yaml
-`grid search`
+# grid search
 python -m src.grid_search --config configs/config.yaml
-`Train complet`
+# Train complet
 python -m src.train --config configs/config.yaml
-`grid search refined (M8)`
+# grid search refined (M8)
 python -m src.grid_search --config configs/config.yaml --refined
-`train 2eme modèle`
-python -m src.evaluate --config configs/config1.yaml --checkpoint artifacts/best_model2.ckpt
-`comparaison M7`
+# train 2eme modèle
+python -m src.train --config configs/config1.yaml
+# comparaison (M7)
 python -m src.compare_runs --config configs/config.yaml
-`Evaluation Best`
+# Evaluation Best
 python -m src.evaluate --config configs/config.yaml --checkpoint artifacts/best.ckpt
 
-
-
-
 ````
+
+
 
 * **Artifacts requis présents** :
 
@@ -817,26 +821,35 @@ python -m src.evaluate --config configs/config.yaml --checkpoint artifacts/best.
 
 * PyTorch docs des modules utilisés (Conv2d, BatchNorm, ReLU, LSTM/GRU, transforms, etc.).
 * Lien dataset officiel (et/ou HuggingFace/torchvision/torchaudio).
-* 
 * Toute ressource externe substantielle (une ligne par référence).
+```
+
 Support pédagogique :
- CSC8607 — Introduction au Deep Learning (cours et supports fournis).
+
+CSC8607 — Introduction au Deep Learning (cours et supports fournis).
 
 Documentation PyTorch (générale) :
+
  https://docs.pytorch.org/docs/stable/index.html
 
 PyTorch — Modules utilisés (Conv2d, BatchNorm2d, ReLU, etc.) : 
+
 https://pytorch.org/docs/stable/nn.html
 
 PyTorch — Transforms / preprocessing :
+
  https://pytorch.org/vision/stable/transforms.html
 
 Dataset : HuggingFace — Tiny-ImageNet (zh-plus/tiny-imagenet) : 
+
 https://huggingface.co/datasets/zh-plus/tiny-imagenet
 
 TensorBoard : 
+
 https://docs.pytorch.org/docs/stable/tensorboard.html
 
 Assistance (optimisation du code, structuration et correction du rapport) : 
-Gemini
 
+ChatGPT-5
+
+```
