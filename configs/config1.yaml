@@ -56,7 +56,7 @@ train:
 
   optimizer:
     name: adam              # sgd/adam/rmsprop
-    lr: 0.002
+    lr: 0.001
     weight_decay: 0.00001
     momentum: 0.9           # utile si SGD
 
@@ -83,5 +83,5 @@ hparams:
   tag: "grid_search"
 
 paths:
-  runs_dir: "./runs"
+  runs_dir: "./runs/train_model2"
   artifacts_dir: "./artifacts"
