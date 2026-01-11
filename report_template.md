@@ -89,7 +89,7 @@ Configuration technique :
 
 Ratio : 80% validation / 20% test (parmi les 10 000 images du split valid initial).
 
-- Graine aléatoire (Seed) : L'utilisation de torch.Generator().manual_seed(42) garantit que le mélange est strictement identique à chaque exécution. Cette reproductibilité est indispensable pour comparer les performances de différents modèles (comme M6) sur les mêmes données.
+- Graine aléatoire (Seed) : L'utilisation de torch.Generator().manual_seed(42) garantit que le mélange est strictement identique à chaque exécution. Cette reproductibilité est indispensable pour comparer les performances de différents modèles.
 
 ```
 **D4.** Donnez la **distribution des classes** (graphique ou tableau) et commentez en 2–3 lignes l’impact potentiel sur l’entraînement.  
@@ -108,7 +108,7 @@ Impact pour l'entrainement :
 
 ```
 
-- Taille des images : toutes les images  observées sont en RGB 64×64 sauf 2 images en niveau de gris (mode='L') .
+- Taille des images : toutes les images  observées sont en RGB 64×64 sauf 2 images en niveau de gris.
 - Le dataset est parfaitement balancé (500 images/classe)
 - Aucun bruit structurel majeur n'a été détecté. La résolution de 64x64 est cohérente avec les standards de Tiny ImageNet et parfaitement adaptée aux architectures convolutionnelles 
 
@@ -133,10 +133,10 @@ Listez précisément les opérations et paramètres (valeurs **fixes**) :
 
 - Conversion en RGB :
     -  img.convert("RGB") : 
-    -  gérer les rares images non-RGB détectées (quelques images en mode L / niveaux de gris).
+    -  gérer les rares images non-RGB détectées.
 
 - ToTensor : sans param 
-    - conversion PIL → tenseur PyTorch de forme (3, 64, 64), valeurs dans [0, 1].
+    - conversion PIL : tenseur PyTorch de forme (3, 64, 64), valeurs dans [0, 1].
 
 - Normalize(mean, std) :
     -  mean = [0.485, 0.456, 0.406], std = [0.229, 0.224, 0.225] : 
@@ -168,7 +168,7 @@ En entraînement uniquement, j’applique :
 
 - RandomHorizontalFlip (p=0.5) : 
     - Induit une invariance à l'orientation horizontale
-    - Dans bcps de classes de Tiny ImageNet (animaux, véhicules), la sémantique de l'objet ne change pas par symétrie.
+    - Dans beaucoup de classes de Tiny ImageNet (animaux, véhicules), la sémantique de l'objet ne change pas par symétrie.
 
 - RandomCrop (size=64, padding=4) :
     - Simule des variations de cadrage et des légères translations. 
@@ -206,7 +206,7 @@ Oui, les augmentations sont label-preserving :
 
 Les exemples affichés du split train confirment que  :
 
-- La normalisation utilisée pour la visualisation permet de vérifier que les images restent naturelles (couleurs et contraste plausibles) malgré la normalisation appliquée pendant l’entraînement.
+- La normalisation utilisée pour la visualisation permet de vérifier que les images restent naturelles malgré la normalisation.
 
 - RandomCrop avec padding (4 px) est perceptible : on observe de légères variations de cadrage, ce qui simule des petites translations tout en conservant l’objet principal.
 
@@ -249,7 +249,7 @@ _Commentez en 2 lignes ce que ces chiffres impliquent._
 ```
 
 Ces scores sont très faibles car la tâche comporte 200 classes :
- -  un modèle non informatif se situe autour de ~0,5% d’accuracy. 
+ -  un modèle non informatif se situe autour de 0,5% d’accuracy. 
  -  Cela fixe un plancher minimal à dépasser dès les premiers essais d’entraînement
  -  le modèle doit obtenir une accuracy nettement supérieure à ces baselines pour montrer qu’il apprend réellement.
 
@@ -268,11 +268,11 @@ Ces scores sont très faibles car la tâche comporte 200 classes :
     - Concaténation des 3 branches sur les canaux → sortie 192 canaux
     - BatchNorm2d(192)
   - Réduction de résolution :
-    -  si M= 4 : MaxPool2d(2×2) après le module 2 : 64×64 → 32×32
-    -  Si M = 6 : MaxPool2d(2×2, stride=2) après le module 2 et après le module 4 (64×64 → 32×32 → 16×16)
+    -  si M= 4 : MaxPool2d(2×2) après le module 2 : (64×64 → 32×32)
+    -  Si M = 6 : MaxPool2d(2×2, stride=2) après le module 2 et après le module 4 :(64×64 → 32×32 → 16×16)
   - Tête de classification :
     -  AdaptiveAvgPool2d(1×1) (Global Average Pooling) 
-    -  Flatten vecteur de taille(192) →
+    -  Flatten vecteur de taille(192)
     -  Linear(192→200) → logits
 
 ```
@@ -379,7 +379,7 @@ Le LR finder montre une baisse nette de la loss à partir d’environ 1.6×10⁻
 | `grid_search_k=034_M=6_bc=64-64-64_bs=32_lr=2.00e-03_wd=1e-05_224047` | 2e-3 | 1e-5 | 6 | (64-64-64) | 0.2973 | 3.0466 | meilleur global |
 | `grid_search_k=018_M=6_bc=64-64-64_bs=32_lr=1.00e-03_wd=1e-05_210629` | 1e-3 | 1e-5 | 6 | (64-64-64 )| 0.2944 | 3.0387 | proche du meilleur(loss min) |
 | `grid_search_k=043_M=6_bc=48-72-72_bs=64_lr=2.00e-03_wd=1e-05_233409` | 2e-3 | 1e-5 | 6 | (48-72-72 )| 0.2888 | 3.0626 | bon avec batch 64 |
-| `grid_search_k=035_M=6_bc=48-72-72_bs=32_lr=2.00e-03_wd=1e-05_224638` | 2e-3 | 1e-5 | 6 | (48-72-72 )| 0.2886 | 3.0828 | channels alternatifs ok |
+| `grid_search_k=035_M=6_bc=48-72-72_bs=32_lr=2.00e-03_wd=1e-05_224638` | 2e-3 | 1e-5 | 6 | (48-72-72 )| 0.2886 | 3.0828 | channels alternatifs |
 | `grid_search_k=033_M=4_bc=48-72-72_bs=32_lr=2.00e-03_wd=1e-05_223501` | 2e-3 | 1e-5 | 4 | (48-72-72 )| 0.2799 | 3.1604 | meilleur en M=4 |
 | `grid_search_k=042_M=6_bc=64-64-64_bs=64_lr=2.00e-03_wd=1e-05_232749` | 2e-3 | 1e-5 | 6 | (64-64-64 )| 0.2800 | 3.1008 | bs=64 moins bon |
 | `grid_search_k=007_M=6_bc=48-72-72_bs=32_lr=1.00e-04_wd=1e-04_200116` | 1e-4 | 1e-4 | 6 | (48-72-72 )| 0.2169 | 3.5453 | LR trop petit |
@@ -420,7 +420,7 @@ Effet des 2 hyperparamètres de modèle
   - On observe en général une meilleure convergence (val acc plus haute) et une descente plus marquée des courbes, au prix d’un risque d’overfit un peu plus élevé si on entraînait plus longtemps. Dans nos runs courts, M=6 domine globalement M=4 en validation.
 
 - Répartition des canaux par branche ((64, 64, 64) et (48, 72, 72)) :
-   - elle change la “spécialisation” des branches (plus de capacité sur la branche 3×3 quand on met 72). 
+   - elle change la spécialisation des branches (plus de capacité sur la branche 3×3 quand on met 72). 
    - Les deux restent proches, mais 64-64-64 est légèrement plus stable et performant sur le meilleur run.
    - Tandis que (48, 72, 72) peut donner des résultats comparables selon le batch size et le LR par exemple certains runs M=6 restent très proches.
 
@@ -468,7 +468,7 @@ Analyse des courbes :
 - L’entraînement est globalement stable : 
   - La train/loss baisse de manière régulière et la val/loss ne montre pas d’explosion ni d’oscillations anormales. 
   - On n’observe pas de sous-apprentissage, puisque les courbes train et validation s’améliorent nettement au début, ce qui indique que le modèle apprend effectivement.
-  - En revanche, on voit un léger sur-apprentissage en fin d’entraînement puisque la train/loss continue de diminuer alors que la val/loss et la val/accuracy        plafonnent.
+  - En revanche, on voit un léger sur-apprentissage en fin d’entraînement puisque la train/loss continue de diminuer alors que la val/loss et la val/accuracy plafonnent.
 
 ```
 
@@ -493,7 +493,7 @@ LR : En diminuant le LR, on s’attend à une convergence plus lente mais les de
 
 ```
 
-WD : Avec un weight decay plus élevé, on s’attend à réduire l’écart train–val mais ca présente bien un gap plus faible mais des pertes plus hautes et une val/accuracy plus basse (≈0.46 vs ≈0.50), ce qui indique une régularisation trop forte menant au sous-apprentissage.
+WD : Avec un weight decay plus élevé, on s’attend à réduire l’écart train–val mais ca présente bien un gap plus faible mais des pertes plus hautes et une val/accuracy plus basse (0.46 vs 0.50), ce qui indique une régularisation trop forte menant au sous-apprentissage.
 
 ```
 
@@ -570,7 +570,7 @@ interpretation :
 l'ecart entre les performances du split test et validation est faible :
 val_accuracy =50.7%  | test_accuracy =48.4% 
 val_loss =2.16     |  test_loss =2.198 
-La performance sur le test est un peu en dessous de la meilleure validation , ce qui est attendu : on a choisi le meilleur checkpoint en regardant la validation, donc celle-ci peut être légèrement “optimiste”, et le split test peut être un peu plus difficile.
+La performance sur le test est un peu en dessous de la meilleure validation , ce qui est attendu : on a choisi le meilleur checkpoint en regardant la validation, donc celle-ci peut être légèrement optimiste, et le split test peut être un peu plus difficile.
 
 On ne voit pas de signe de surapprentissage marqué : l’écart reste modéré entre validation et test, et il est cohérent avec les courbes d’entraînement et validation qui se stabilisent sans divergence brutale.
 
